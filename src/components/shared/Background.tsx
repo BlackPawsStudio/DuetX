@@ -73,5 +73,5 @@ export const Background = () => {
     }
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full"></canvas>;
+  return <canvas ref={canvasRef} className="absolute top-0 z-0 left-0 w-full h-full"></canvas>;
 };
