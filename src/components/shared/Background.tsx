@@ -1,18 +1,28 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 const drawRect = (
-  { size, angle, width, amount }: { size: number; angle?: number; width: number; amount?: number },
+  {
+    size,
+    angle,
+    width,
+    amount,
+  }: { size: number; angle?: number; width: number; amount?: number },
   ctx: CanvasRenderingContext2D
 ) => {
   const canvas = ctx.canvas;
-  if (typeof angle === 'number') {
+  if (typeof angle === "number") {
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.rotate((15 * Math.PI) / 180);
     ctx.translate(-canvas.width / 2, -canvas.height / 2);
   }
-  ctx.fillStyle = '#191919';
-  ctx.fillRect(canvas.width / 2 - size / 2, canvas.height / 2 - size / 2, size, size);
-  ctx.fillStyle = 'black';
+  ctx.fillStyle = `#191919`;
+  ctx.fillRect(
+    canvas.width / 2 - size / 2,
+    canvas.height / 2 - size / 2,
+    size,
+    size
+  );
+  ctx.fillStyle = "black";
   ctx.fillRect(
     canvas.width / 2 - (size - width) / 2,
     canvas.height / 2 - (size - width) / 2,
@@ -23,11 +33,10 @@ const drawRect = (
 
 const draw = (ctx: CanvasRenderingContext2D) => {
   const canvas = ctx.canvas;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = 'black';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  const amount = Math.round((canvas.width > canvas.height ? canvas.width : canvas.height) / 50);
-  new Array(amount).fill('').forEach((_, idx) =>
+  const amount = Math.round(
+    (canvas.width > canvas.height ? canvas.width : canvas.height) / 50
+  );
+  new Array(amount).fill("").forEach((_, idx) =>
     drawRect(
       {
         size: (amount - idx) * 50,
@@ -48,7 +57,7 @@ const draw = (ctx: CanvasRenderingContext2D) => {
   ctx.rotate((1 * Math.PI) / 180);
   ctx.translate(-canvas.width / 2, -canvas.height / 2);
 
-  setTimeout(() => requestAnimationFrame(() => draw(ctx)), 1000 / 60);
+  return setTimeout(() => requestAnimationFrame(() => draw(ctx)), 1000 / 60);
 };
 
 export const Background = () => {
@@ -56,9 +65,9 @@ export const Background = () => {
 
   useEffect(() => {
     if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d');
+      const ctx = canvasRef.current.getContext("2d");
       if (ctx) {
-        requestAnimationFrame(() => draw(ctx));
+        const animation = requestAnimationFrame(() => draw(ctx));
 
         const handleResize = () => {
           ctx.canvas.height = window.innerHeight;
@@ -66,12 +75,15 @@ export const Background = () => {
         };
 
         handleResize();
-        window.addEventListener('resize', handleResize);
+        window.addEventListener("resize", handleResize);
 
-        return () => window.removeEventListener('resize', handleResize);
+        return () => {
+          window.removeEventListener("resize", handleResize);
+          cancelAnimationFrame(animation);
+        };
       }
     }
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute top-0 z-0 left-0 w-full h-full"></canvas>;
+  return <canvas ref={canvasRef} className="w-full h-full" />;
 };
