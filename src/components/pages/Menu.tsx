@@ -1,15 +1,28 @@
 import { useNavigate } from "react-router";
 import { Button } from "../shared/Button";
+import { useState } from "react";
 
 export const MenuPage = () => {
   const navigate = useNavigate();
+  const [highscoreShown, setHighscoreShown] = useState(true);
   return (
     <div className="w-full h-full flex items-center justify-center">
       {(() => {
         const highscore = localStorage.getItem("highscore");
-        if (highscore) {
+        if (highscore && highscoreShown) {
           return (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[350%] text-white text-2xl">
+            <div
+              onClick={() => {
+                const answer = confirm(
+                  "Are you sure you want to reset your highscore?"
+                );
+                if (answer) {
+                  localStorage.removeItem("highscore");
+                  setHighscoreShown(false);
+                }
+              }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[350%] text-white text-2xl cursor-pointer"
+            >
               Highscore: {highscore}
             </div>
           );

@@ -1,5 +1,6 @@
 export type ObstacleSide = "left" | "right";
 export type ObstacleType = "simple" | "short" | "square";
+export type ObstacleDirection = "up" | "down";
 
 export interface Rectangle {
   w: number;
@@ -17,4 +18,5 @@ export interface Circle {
 export interface Percentage {
   short: number;
   square: number;
+  direction: number;
 }

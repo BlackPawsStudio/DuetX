@@ -5,15 +5,17 @@ import { Background } from "../shared/Background";
 import { Button } from "../shared/Button";
 import { useNavigate } from "react-router";
 import { Range } from "../shared/Range";
+import { MultiRange } from "../shared/MultiRange";
 
 export const GamePage = () => {
   const rotation = useRef<number>(0);
 
   const [speed, setSpeed] = useState<number>(1.1);
   const [distance, setDistance] = useState<number>(150);
-  const [rightLeftPerc, setRightLeftPerc] = useState<number>(0.5);
-  const [shortPerc, setShortPerc] = useState<number>(0);
-  const [squarePerc, setSquarePerc] = useState<number>(1);
+  const [leftRightPerc, setLeftRightPerc] = useState<number>(0.5);
+  const [directionPerc, setDirectionPerc] = useState<number>(0.5);
+  const [shortPerc, setShortPerc] = useState<number>(0.3);
+  const [squarePerc, setSquarePerc] = useState<number>(0.3);
 
   const rotationAngle = useRef<number>(0);
 
@@ -79,7 +81,7 @@ export const GamePage = () => {
           <div className="flex text-white text-xl flex-col gap-3">
             SETTINGS:
             <Range
-              setTitle={`Game speed: ${speed}x`}
+              title={`Game speed: ${speed}x`}
               min={0.5}
               max={2}
               step={0.1}
@@ -89,7 +91,7 @@ export const GamePage = () => {
               }}
             />
             <Range
-              setTitle={`Obstacle distance: ${distance}`}
+              title={`Obstacle distance: ${distance}`}
               min={150}
               max={300}
               step={10}
@@ -99,7 +101,7 @@ export const GamePage = () => {
               }}
             />
             <Range
-              setTitle={
+              title={
                 <div className="flex w-full justify-between">
                   <div>Left</div>
                   <div>Right</div>
@@ -109,30 +111,50 @@ export const GamePage = () => {
               min={0}
               max={1}
               step={0.1}
-              defaultValue={rightLeftPerc}
+              defaultValue={leftRightPerc}
               onChange={(e) => {
-                setRightLeftPerc(+e.target.value);
+                setLeftRightPerc(+e.target.value);
               }}
             />
             <Range
-              setTitle={"Short obstacle chance: " + shortPerc + "%"}
+              title={
+                <div className="flex w-full justify-between">
+                  <div>Down</div>
+                  <div>Up</div>
+                </div>
+              }
+              className="appearance-none h-[7px] rounded-full shadow-sm"
               min={0}
               max={1}
               step={0.1}
-              defaultValue={shortPerc}
+              defaultValue={directionPerc}
               onChange={(e) => {
-                setShortPerc(+e.target.value);
+                setDirectionPerc(+e.target.value);
               }}
             />
-            <Range
-              setTitle={"Square obstacle chance: " + squarePerc + "%"}
-              min={0}
+            <MultiRange
               max={1}
+              min={0}
               step={0.1}
-              defaultValue={squarePerc}
-              onChange={(e) => {
-                setSquarePerc(+e.target.value);
-              }}
+              value={[shortPerc, squarePerc]}
+              onChange={[
+                (e) => {
+                  if (+e.target.value + squarePerc >= 1) setSquarePerc(1 - +e.target.value);
+                  setShortPerc(+e.target.value);
+                },
+                (e) => {
+                  setSquarePerc(+e.target.value);
+                },
+              ]}
+              title={
+                <div className="flex w-full justify-between gap-2">
+                  <div>Short: {Math.round(shortPerc * 100)}%</div>
+                  <div>Square: {Math.round(squarePerc * 100)}%</div>
+                  <div>
+                    Simple: {Math.round((1 - shortPerc - squarePerc) * 100)}%
+                  </div>
+                </div>
+              }
             />
           </div>
         </div>
@@ -150,10 +172,11 @@ export const GamePage = () => {
             setGameEnd={setGameEnd}
             obstacleSpeed={speed * 4.1818}
             distance={distance}
-            rightLeftPerc={rightLeftPerc}
+            rightLeftPerc={leftRightPerc}
             percentage={{
               short: shortPerc,
               square: squarePerc,
+              direction: directionPerc,
             }}
           />
         </>

@@ -18,6 +18,21 @@
     color: #23acff;
   }
 }
+
 .animate-color {
   animation: color 4s linear infinite;
+}
+
+@keyframes colorBg {
+  0%,
+  100% {
+    background: red;
+  }
+  50% {
+    background: #23acff;
+  }
+}
+
+.animate-bgColor {
+  animation: colorBg 4s linear infinite;
 }

@@ -118,12 +118,12 @@ export const Obstacles = ({
                   ? "square"
                   : "simple",
                 Math.random() + rightLeftPerc > 1 ? "left" : "right",
+                Math.random() + percentage.direction > 1 ? "up" : "down",
                 ctx,
                 rightLeftPerc,
                 percentage
               )
-          );
-
+        );
         const playerSize = Math.round(
           canvas.width > canvas.height ? canvas.width / 25 : canvas.height / 10
         );
